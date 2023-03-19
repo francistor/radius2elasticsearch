@@ -1,0 +1,15 @@
+{
+	"attributeMap": {
+		"MSISDN": "User-Name",
+		"SessionId": "Acct-Session-Id",
+		"SessionTime": "Acct-Session-Time!Acct-Delay-Time",
+		"Status": "Acct-Status-Type",
+		"IPAddress": "Framed-IP-Address",
+		"NASIPAddress": "NAS-IP-Address",
+		"Timestamp": "Event-Timestamp"
+	},
+	"indexName": "sessions",
+	"indexType": "fixed",
+	"idFields": ["Framed-IP-Address"],
+	"versionField": "Event-Timestamp"
+}
