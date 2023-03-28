@@ -1,7 +1,7 @@
 {
 	"bindAddress": "0.0.0.0",
-	"authPort": 21812,
-	"acctPort": 21813,
+	"authPort": {{ .AUTH_PORT }},
+	"acctPort": {{ .ACCT_PORT }},
 	"coaPort": 23799,
 	"originPorts": [9010, 9011]
 }

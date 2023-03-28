@@ -36,9 +36,7 @@ do
     request=$(echo $TEMPLATE | sed -e "s/%NUMBER%/$i/g")
     echo $request
 # Send request that will be replied echoing all attributes
-    # response=$(echo "$request" | curl -s http://localhost:8080/routeRadiusRequest -X POST --data-binary @- )
     echo "$request" | curl -s http://localhost:18080/routeRadiusRequest -X POST --data-binary @-
-    # echo $response
 done
 
 # Name must be cut down
