@@ -1,7 +1,21 @@
 #!/bin/bash
 
-# Prepare Elasticsearch
+# Launch an elasticsearch container with security disabled
+docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e xpack.security.enabled=false elasticsearch:8.6.2
 
+# Wait until ready
+echo "waiting for elasticsearch ..."
+until [ "`docker inspect -f {{.State.Running}} elasticsearch`"=="true" ]; do
+    sleep 1;
+done;
+
+until curl http://localhost:9200
+do
+    sleep 1;
+done;
+
+
+# Prepare Elasticsearch. Create a component template
 curl -H "Content-Type: application/json" -X PUT http://localhost:9200/_component_template/cdr_component_template -d '
 {
     "template": {
@@ -124,6 +138,10 @@ curl -H "Content-Type: application/json" -X PUT http://localhost:9200/_index_tem
 }'
 
 echo ""
+
+
+
+
 
 
 

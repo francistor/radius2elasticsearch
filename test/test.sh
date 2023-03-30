@@ -2,7 +2,7 @@
 
 TEMPLATE='
     {
-    "destination": "127.0.0.1:21812",
+    "destination": "127.0.0.1:21813",
     "packet": {
     "Code": 4,
     "AVPs":[
@@ -22,23 +22,40 @@ TEMPLATE='
     }
     '
 
-# Start http2radius
-#$HOME/http2radius/http2radius &
-
 # Start radius2elasticsearch
-$HOME/radius2elasticsearch/radius2elasticsearch -elasticurl http://localhost:9200 &
+pushd $HOME/radius2elasticsearch > /dev/null
+./radius2elasticsearch -elasticurl http://localhost:9200 > /dev/null &
+popd > /dev/null
+
+# Start http2radius
+pushd $HOME/http2radius > /dev/null
+./http2radius > /dev/null &
+popd > /dev/null
 
 # Wait for server started
-sleep 1
+sleep 5
 
-for i in $(seq 1 1)
+for i in $(seq 1 5)
 do
     request=$(echo $TEMPLATE | sed -e "s/%NUMBER%/$i/g")
+    echo "request >>"
     echo $request
 # Send request that will be replied echoing all attributes
+    echo "response <<"
     echo "$request" | curl -s http://localhost:18080/routeRadiusRequest -X POST --data-binary @-
+    echo
+    echo 
 done
 
-# Name must be cut down
 sleep 5
+
+# Find one session
+[[ `curl -s http://localhost:9200/_all/_search?q=IPAddress:10.0.0.1|jq '.hits.total.value'` == "1" ]] || ( echo "[FAILED] entry not found" && exit )
+
+# Get the number of written sessions with the first IP address
+[[ `curl -s http://localhost:9200/_all/_search|jq '.hits.total.value'` == "5" ]] || ( echo "[FAILED] bad number of entries" && exit )
+
+# Name of process must be cut down
+echo [OK]
 pkill radius2elastics
+pkill http2radius

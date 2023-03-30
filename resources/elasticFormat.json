@@ -1,6 +1,6 @@
 {
 	"attributeMap": {
-		"MSISDN": "User-Name",
+		"UserName": "User-Name",
 		"SessionId": "Acct-Session-Id",
 		"SessionTime": "Acct-Session-Time!Acct-Delay-Time",
 		"Status": "Acct-Status-Type",
